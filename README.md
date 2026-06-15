@@ -1,5 +1,6 @@
 # 初始化并推送到github
 
+```bash
 echo "# git-demo" >> README.md
 git init
 git add README.md
@@ -7,6 +8,7 @@ git commit -m "first commit"
 git branch -M main
 git remote add origin git@github.com:morningcat2018/git-demo.git
 git push -u origin main
+```
 
 # git status
 
@@ -27,7 +29,7 @@ no changes added to commit (use "git add" and/or "git commit -a")
 
 # git add 
 
-- git add <file>	
+- git add `<file>`
     - 暂存	
     - 将指定文件添加到暂存区。
 - git add .	
@@ -92,9 +94,136 @@ Date:   Mon Jun 15 23:19:34 2026 +0800
     first commit
 ```
 
-# 可以不git add直接git commit
+# git restore
+
+- git restore `<file>`
+- 撤销	
+- 丢弃工作区中文件的修改（Git 2.23+ 推荐）。
+- git restore --staged `<file>`
+- 撤销	
+- 将文件从暂存区移回工作区（撤销 git add）。
 
 ```bash
+➜  git-demo git:(main) ✗ touch file1.txt
+➜  git-demo git:(main) ✗ echo "git" >> file1.txt 
+➜  git-demo git:(main) ✗ git add .
+➜  git-demo git:(main) ✗ git status
+On branch main
+Your branch is ahead of 'origin/main' by 2 commits.
+  (use "git push" to publish your local commits)
 
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   README.md
+	new file:   file1.txt
 
+➜  git-demo git:(main) ✗ git restore --staged file1.txt 
+➜  git-demo git:(main) ✗ git status                    
+On branch main
+Your branch is ahead of 'origin/main' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   README.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	file1.txt
+
+➜  git-demo git:(main) ✗ cat file1.txt 
+git
+➜  git-demo git:(main) ✗ 
+```
+由此可见 git restore --staged `<file>` 是将文件从暂存区移回工作区, 即撤销git add 的效果
+
+```bash
+➜  git-demo git:(main) ✗ echo "hello" >> file1.txt 
+➜  git-demo git:(main) ✗ git status
+On branch main
+Your branch is ahead of 'origin/main' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   README.md
+	new file:   file1.txt
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   file1.txt
+
+➜  git-demo git:(main) ✗ cat file1.txt 
+git
+hello
+➜  git-demo git:(main) ✗ git restore file1.txt 
+➜  git-demo git:(main) ✗ git status
+On branch main
+Your branch is ahead of 'origin/main' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   README.md
+	new file:   file1.txt
+
+➜  git-demo git:(main) ✗ cat file1.txt 
+git
+➜  git-demo git:(main) ✗ 
+```
+
+丢弃工作区中文件的修改, 是将还没有git add的文件里的修改撤销会git add之前的状态
+
+```bash
+➜  git-demo git:(main) ✗ echo "hello" >> file1.txt 
+➜  git-demo git:(main) ✗ cat file1.txt 
+git
+hello
+➜  git-demo git:(main) ✗ git add file1.txt 
+➜  git-demo git:(main) ✗ git status
+On branch main
+Your branch is ahead of 'origin/main' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   README.md
+	new file:   file1.txt
+
+➜  git-demo git:(main) ✗ echo "hello2" >> file1.txt
+➜  git-demo git:(main) ✗ cat file1.txt 
+git
+hello
+hello2
+➜  git-demo git:(main) ✗ git status
+On branch main
+Your branch is ahead of 'origin/main' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   README.md
+	new file:   file1.txt
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   file1.txt
+
+➜  git-demo git:(main) ✗ git restore file1.txt 
+➜  git-demo git:(main) ✗ cat file1.txt 
+git
+hello
+➜  git-demo git:(main) ✗ git status           
+On branch main
+Your branch is ahead of 'origin/main' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   README.md
+	new file:   file1.txt
+
+➜  git-demo git:(main) ✗ 
 ```
